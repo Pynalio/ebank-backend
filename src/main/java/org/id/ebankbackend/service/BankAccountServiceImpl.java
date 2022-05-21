@@ -10,9 +10,6 @@ import org.id.ebankbackend.exceptions.CustomerNotFoundException;
 import org.id.ebankbackend.repositories.AccountOpetrationRepository;
 import org.id.ebankbackend.repositories.BankAccountRepository;
 import org.id.ebankbackend.repositories.CustomerRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,7 +95,8 @@ public class BankAccountServiceImpl implements BankAccountService{
 
     @Override
     public void debit(String accountId, double amount, String description) throws BankAccountNotFoundException, BlanceNotSufficentException {
-        BankAccount bankAccount=getBankAccount(accountId);
+        BankAccount bankAccount=bankAccountRepository.findById(accountId)
+                .orElseThrow(()->new BankAccountNotFoundException("BankAccount not found"));
         if(bankAccount.getBalance()<amount){
             throw new BlanceNotSufficentException("Balance not sufficient");
         }
@@ -115,12 +113,32 @@ public class BankAccountServiceImpl implements BankAccountService{
     }
 
     @Override
-    public void credit(String accountId, double amount, String description) {
+    public void credit(String accountId, double amount, String description) throws BankAccountNotFoundException{
+        BankAccount bankAccount=bankAccountRepository.findById(accountId)
+                .orElseThrow(()->new BankAccountNotFoundException("BankAccount not found"));
+
+        AccountOperation x=new AccountOperation();
+        x.setType(OperationType.CREDIT);
+        x.setAmount(amount);
+        x.setDescription(description);
+        x.setOperationDate(new Date());
+        x.setBankAccount(bankAccount);
+
+        accountOpetrationRepository.save(x);
+        bankAccount.setBalance(bankAccount.getBalance()+amount);
+        bankAccountRepository.save(bankAccount);
 
     }
 
     @Override
-    public void transfer(String accountIdSource, String accountIdDestination, double amount) {
+    public void transfer(String accountIdSource, String accountIdDestination, double amount) throws BlanceNotSufficentException, BankAccountNotFoundException {
+        debit(accountIdSource,amount,"Transfer to "+ accountIdDestination);
+        credit(accountIdDestination,amount,"Transfer from "+ accountIdSource );
+    }
 
+
+    @Override
+    public List<BankAccount> bankAccountList(){
+        return bankAccountRepository.findAll();
     }
 }
