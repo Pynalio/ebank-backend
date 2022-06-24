@@ -1,19 +1,17 @@
 package org.id.ebankbackend.web;
 
 
+import java.util.List;
 import org.id.ebankbackend.dtos.AccountHistoryDTO;
 import org.id.ebankbackend.dtos.AccountOperationDTO;
 import org.id.ebankbackend.dtos.BankAccountDTO;
 import org.id.ebankbackend.exceptions.BankAccountNotFoundException;
 import org.id.ebankbackend.service.BankAccountService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 public class BankAccountRestAPI {
 
     private BankAccountService bankAccountService;

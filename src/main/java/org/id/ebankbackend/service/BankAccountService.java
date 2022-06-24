@@ -1,5 +1,6 @@
 package org.id.ebankbackend.service;
 
+
 import org.id.ebankbackend.dtos.*;
 import org.id.ebankbackend.entities.BankAccount;
 import org.id.ebankbackend.entities.CurrentACCOUNT;
@@ -8,8 +9,9 @@ import org.id.ebankbackend.entities.SavingAccount;
 import org.id.ebankbackend.exceptions.BankAccountNotFoundException;
 import org.id.ebankbackend.exceptions.BlanceNotSufficentException;
 import org.id.ebankbackend.exceptions.CustomerNotFoundException;
-
 import java.util.List;
+
+
 
 public interface BankAccountService  {
 
@@ -27,13 +29,15 @@ public interface BankAccountService  {
 
      List<BankAccountDTO> bankAccountList();
 
+
      CustomerDTO getCustomer(Long costomerid) throws CustomerNotFoundException;
+
 
      CustomerDTO updateCustomer(CustomerDTO customerDTO);
 
      void deleteCustomer(Long cutomerid);
 
-     List<AccountOperationDTO>  accountHistory(String accountId);
+     List<AccountOperationDTO> accountHistory(String accountId);
 
      AccountHistoryDTO getAccountHistory(String accountId, int page, int size) throws BankAccountNotFoundException;
 }
